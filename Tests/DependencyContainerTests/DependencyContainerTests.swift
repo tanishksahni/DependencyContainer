@@ -1,12 +1,26 @@
 import XCTest
 @testable import DependencyContainer
 
-final class DependencyContainerTests: XCTestCase {
-    func testExample() throws {
-        // XCTest Documentation
-        // https://developer.apple.com/documentation/xctest
+protocol SingleInstanceProtocol: AnyObject {
+    func sampleMethod()
+}
 
-        // Defining Test Cases and Test Methods
-        // https://developer.apple.com/documentation/xctest/defining_test_cases_and_test_methods
+final class SingleInstanceImplementation: SingleInstanceProtocol{
+    func sampleMethod() {
+        //
     }
+}
+
+final class DependencyContainerTests: XCTestCase {
+    func test_single_instance_registration_and_resolving() {
+        let instance = SingleInstanceImplementation()
+        DC.shared.register(type: .singleInstance(instance), for: SingleInstanceProtocol.self)
+        
+        let resolvedInsatance = DC.shared.resolve(type: .singleInstanace, for: SingleInstanceProtocol.self)
+        
+        // "===" make sure that the objects are same thing in mamory
+        XCTAssert(instance === resolvedInsatance)
+        
+    }
+    
 }
